@@ -61,13 +61,9 @@ export const changeToStorageMode = async (page: Page) => {
 			'restart',
 			{}
 		);
-	});
-
-	await page.evaluate(async () => {
-		const homeAssistant = document.querySelector('home-assistant') as HomeAssistant;
 		await new Promise<void>((resolve, reject) => {
 			const checkDelay = 1000;
-			const checksLimit = 10;
+			const checksLimit = 15;
 			const checkConnection = (retries = 0) => {
 				if (homeAssistant.hass.connected) {
 					resolve();
@@ -84,6 +80,7 @@ export const changeToStorageMode = async (page: Page) => {
 			checkConnection();
 		});
 	});
+
 	await expect(page.locator(SELECTORS.TOAST)).not.toBeVisible();
 	await page.reload();
 	await expect(page.locator(SELECTORS.HUI_MASONRY_VIEW)).toBeVisible();
