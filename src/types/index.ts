@@ -66,7 +66,7 @@ export interface HomeAsssistantExtended extends HomeAssistant {
 }
 
 export class Lovelace extends HTMLElement {
-	lovelace: {
+	lovelace!: {
         config: {
             kiosk_mode: KioskConfig;
         };
@@ -75,8 +75,8 @@ export class Lovelace extends HTMLElement {
 }
 
 export class HaSidebar extends HTMLElement {
-	type: 'modal' | '';
-	appContent: HTMLElement;
+	type!: 'modal' | '';
+	appContent!: HTMLElement;
 }
 
 export interface SubscriberTemplate {
