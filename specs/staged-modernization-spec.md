@@ -55,7 +55,10 @@ Each stage must pass all of the following before moving forward:
 - [x] Stage 3: Build Toolchain Incremental Updates
 - [x] Stage 4: Introduce Parallel Modern Build Output
 - [ ] Stage 5: TypeScript 6 Migration in Controlled Slices
-- [ ] Stage 6: Optional ES6-First Promotion
+- [ ] Stage 6: Artifact and Build Pipeline Parity Check
+- [ ] Stage 7: Runtime Dependency Parity (One Package at a Time)
+- [ ] Stage 8: Runtime Source Parity (One Change Group at a Time)
+- [ ] Stage 9: Optional ES6-First Promotion
 
 ### Stage 0: Stability Lock (No behavior changes)
 Scope:
@@ -172,7 +175,72 @@ Mini checklist:
 - [ ] Validation tag published (if needed).
 - [x] Rollback path documented.
 
-### Stage 6: Optional ES6-First Promotion
+### Stage 6: Artifact and Build Pipeline Parity Check
+Scope:
+- Keep current runtime code and dependency versions fixed.
+- Verify channel/artifact behavior with controlled toggles:
+  1. `-es5` tags serving ES5 artifact.
+  2. Standard tags serving modern artifact.
+  3. Optional A/B check: serve modern artifact under a temporary `-es5` test tag to prove artifact-level impact.
+Deliverables:
+- Artifact mapping matrix with test tags and outcomes.
+Exit criteria:
+- Clear PASS/FAIL evidence for whether artifact selection alone changes Chromecast behavior.
+Rollback:
+- Revert CI mapping-only commits.
+Mini checklist:
+- [ ] Scope changes applied only for Stage 6.
+- [ ] `pnpm test:ts` passed.
+- [ ] `pnpm build` passed.
+- [ ] Legacy device/cast smoke test passed.
+- [ ] Validation tag published (if needed).
+- [ ] Rollback path documented.
+
+### Stage 7: Runtime Dependency Parity (One Package at a Time)
+Scope:
+- Keep source code and build pipeline stable.
+- Move runtime dependencies from compat versions to master versions one at a time:
+  1. `home-assistant-query-selector`
+  2. `home-assistant-javascript-templates`
+  3. `home-assistant-styles-manager`
+  4. `shadow-dom-selector` (if required by the target stack)
+Deliverables:
+- Per-package validation table (`from`, `to`, tag, result).
+Exit criteria:
+- First known-bad package/version jump identified or full dependency parity achieved without regression.
+Rollback:
+- Revert only the failing package bump commit.
+Mini checklist:
+- [ ] Scope changes applied only for Stage 7.
+- [ ] `pnpm test:ts` passed.
+- [ ] `pnpm build` passed.
+- [ ] Legacy device/cast smoke test passed.
+- [ ] Validation tag published (if needed).
+- [ ] Rollback path documented.
+
+### Stage 8: Runtime Source Parity (One Change Group at a Time)
+Scope:
+- Keep dependencies frozen at the known-good set from Stage 7.
+- Reintroduce remaining runtime/source deltas in isolated groups:
+  1. DOM query timing/order changes
+  2. style application sequencing
+  3. dialog/header selector and async flow changes
+  4. console helper API migration (`getCSSString` -> `getCSSRulesString`) only if dependencies support it cleanly
+Deliverables:
+- Change-group matrix with tag and device outcome for each group.
+Exit criteria:
+- First known-bad source change group identified or full source parity achieved.
+Rollback:
+- Revert only the failing change-group commit.
+Mini checklist:
+- [ ] Scope changes applied only for Stage 8.
+- [ ] `pnpm test:ts` passed.
+- [ ] `pnpm build` passed.
+- [ ] Legacy device/cast smoke test passed.
+- [ ] Validation tag published (if needed).
+- [ ] Rollback path documented.
+
+### Stage 9: Optional ES6-First Promotion
 Scope:
 - Promote modern channel as recommended default only after parity validation.
 - Keep legacy channel available for a deprecation window.
@@ -180,7 +248,7 @@ Exit criteria:
 - N releases with no legacy-blocking regressions.
 - Clear user communication before any legacy support change.
 Mini checklist:
-- [ ] Scope changes applied only for Stage 6.
+- [ ] Scope changes applied only for Stage 9.
 - [ ] `pnpm test:ts` passed.
 - [ ] `pnpm build` passed.
 - [ ] Legacy device/cast smoke test passed.
