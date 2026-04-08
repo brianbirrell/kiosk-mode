@@ -52,6 +52,7 @@ import {
 	cached,
 	getMenuTranslations,
 	parseVersion,
+	getCSSInJSArray,
 	queryString,
 	resetCache,
 	setCache
@@ -90,11 +91,11 @@ class KioskMode implements KioskModeRunner {
 			} = this.HAElements;
 
 			this.ha = await HOME_ASSISTANT.element as HomeAsssistantExtended;
-			this.main = await HOME_ASSISTANT_MAIN.selector.$.element;
-			this.huiRoot = await HUI_ROOT.selector.$.element;
+			this.main = await HOME_ASSISTANT_MAIN.selector.$.element as ShadowRoot;
+			this.huiRoot = await HUI_ROOT.selector.$.element as ShadowRoot;
 			this.drawerLayout = await HA_DRAWER.element as HaSidebar;
-			this.appToolbar = await HEADER.selector.query(ELEMENT.TOOLBAR).element;
-			this.sideBarRoot = await HA_SIDEBAR.selector.$.element;
+			this.appToolbar = await HEADER.selector.query(ELEMENT.TOOLBAR).element as Element;
+			this.sideBarRoot = await HA_SIDEBAR.selector.$.element as ShadowRoot;
 
 			this.user = await getPromisableResult(
 				(): HomeAsssistantExtended['hass']['user'] => this.ha?.hass?.user,
@@ -130,25 +131,25 @@ class KioskMode implements KioskModeRunner {
 	}
 
 	// Elements
-	private HAElements: OnLovelacePanelLoadDetail;
-	private HAMoreInfoDialogElements: OnMoreInfoDialogOpenDetail | OnHistoryAndLogBookDialogOpenDetail;
-	private styleManager: HomeAssistantStylesManager;
-	private ha: HomeAsssistantExtended;
-	private main: ShadowRoot;
-	private user: HomeAsssistantExtended['hass']['user'];
-	private huiRoot: ShadowRoot;
-	private drawerLayout: HaSidebar;
-	private appToolbar: Element;
-	private sideBarRoot: ShadowRoot;
-	private menuTranslations: Record<string, string>;
-	private resizeDelay: number;
-	private resizeWindowBinded: () => void;
-	private _renderer: HomeAssistantJavaScriptTemplatesRenderer;
-	private _runTimeout: number;
-	private version: Version | null;
+	private HAElements!: OnLovelacePanelLoadDetail;
+	private HAMoreInfoDialogElements!: OnMoreInfoDialogOpenDetail | OnHistoryAndLogBookDialogOpenDetail;
+	private styleManager!: HomeAssistantStylesManager;
+	private ha!: HomeAsssistantExtended;
+	private main!: ShadowRoot;
+	private user!: HomeAsssistantExtended['hass']['user'];
+	private huiRoot!: ShadowRoot;
+	private drawerLayout!: HaSidebar;
+	private appToolbar!: Element;
+	private sideBarRoot!: ShadowRoot;
+	private menuTranslations!: Record<string, string>;
+	private resizeDelay!: number;
+	private resizeWindowBinded!: () => void;
+	private _renderer!: HomeAssistantJavaScriptTemplatesRenderer;
+	private _runTimeout!: number;
+	private version!: Version | null;
 
 	// Kiosk Mode options
-	private panelOptions: Map<string, Options>;
+	private panelOptions!: Map<string, Options>;
 
 	private _getPanelUrl(): string {
 		return this.ha.hass.panelUrl;
@@ -161,7 +162,7 @@ class KioskMode implements KioskModeRunner {
 
 	private _getOptions(): Options {
 		const panelUrl = this._getPanelUrl();
-		return this.panelOptions.get(panelUrl);
+		return this.panelOptions.get(panelUrl) ?? {};
 	}
 
 	private _storeOptions(options: Options): void {
@@ -226,7 +227,7 @@ class KioskMode implements KioskModeRunner {
 
 	public runDialogs() {
 		const dialog = this.ha?.shadowRoot?.querySelector(ELEMENT.HA_MORE_INFO_DIALOG);
-		const haDialog = dialog?.shadowRoot.querySelector<MoreInfoDialog>(ELEMENT.HA_DIALOG);
+		const haDialog = dialog?.shadowRoot?.querySelector<MoreInfoDialog>(ELEMENT.HA_DIALOG);
 		if (
 			!haDialog ||
 			!haDialog.open
@@ -375,7 +376,7 @@ class KioskMode implements KioskModeRunner {
 			const hideSidebarCommands = (): void => {
 				this.main?.host?.addEventListener(TOGGLE_MENU_EVENT, this.blockEventHandler, true);
 				this.styleManager.addStyle(STYLES.SIDEBAR, this.drawerLayout);
-				this.styleManager.addStyle(STYLES.ASIDE, this.drawerLayout.shadowRoot);
+				this.styleManager.addStyle(STYLES.ASIDE, this.drawerLayout.shadowRoot!);
 				if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) setCache(TRUE, OPTION.HIDE_SIDEBAR);
 				this.drawerLayout.removeEventListener(MC_DRAWER_CLOSED_EVENT, hideSidebarCommands);
 			};
@@ -392,7 +393,7 @@ class KioskMode implements KioskModeRunner {
 			}
 		} else {
 			this.styleManager.removeStyle(this.drawerLayout);
-			this.styleManager.removeStyle(this.drawerLayout.shadowRoot);
+			this.styleManager.removeStyle(this.drawerLayout.shadowRoot!);
 		}
 
 		if (
@@ -401,18 +402,16 @@ class KioskMode implements KioskModeRunner {
 			options[OPTION.HIDE_ACCOUNT] ||
 			options[OPTION.HIDE_MENU_BUTTON]
 		) {
-			const styles = [
-				options[OPTION.HIDE_SETTINGS]
-					&& STYLES.SETTINGS,
-				options[OPTION.HIDE_NOTIFICATIONS]
-					&& STYLES.NOTIFICATIONS,
-				options[OPTION.HIDE_ACCOUNT]
-					&& STYLES.ACCOUNT,
-				options[OPTION.HIDE_SETTINGS] && options[OPTION.HIDE_ACCOUNT] && options[OPTION.HIDE_NOTIFICATIONS]
-					&& STYLES.LIST_AFTER_SPACER,
-				options[OPTION.HIDE_MENU_BUTTON]
-					&& STYLES.MENU_BUTTON
-			];
+			const styles = getCSSInJSArray([
+				[options[OPTION.HIDE_SETTINGS], STYLES.SETTINGS],
+				[options[OPTION.HIDE_NOTIFICATIONS], STYLES.NOTIFICATIONS],
+				[options[OPTION.HIDE_ACCOUNT], STYLES.ACCOUNT],
+				[
+					options[OPTION.HIDE_SETTINGS] && options[OPTION.HIDE_ACCOUNT] && options[OPTION.HIDE_NOTIFICATIONS],
+					STYLES.LIST_AFTER_SPACER
+				],
+				[options[OPTION.HIDE_MENU_BUTTON], STYLES.MENU_BUTTON]
+			]);
 			this.styleManager.addStyle(styles, this.sideBarRoot);
 			if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) {
 				if (options[OPTION.HIDE_SETTINGS])      setCache(TRUE, OPTION.HIDE_SETTINGS);
@@ -436,28 +435,18 @@ class KioskMode implements KioskModeRunner {
 			options[OPTION.HIDE_SIDEBAR] ||
 			options[OPTION.HIDE_MENU_BUTTON]
 		) {
-			const styles = [
-				options[OPTION.HIDE_ADD_TO_HOME_ASSISTANT]
-					&& STYLES.ADD_TO_HOME_ASSISTANT,
-				options[OPTION.HIDE_OVERFLOW]
-					&& STYLES.OVERFLOW_MENU,
-				options[OPTION.HIDE_SEARCH]
-					&& STYLES.SEARCH,
-				options[OPTION.HIDE_ASSISTANT]
-					&& STYLES.ASSISTANT,
-				options[OPTION.HIDE_REFRESH]
-					&& STYLES.REFRESH,
-				options[OPTION.HIDE_UNUSED_ENTITIES]
-					&& STYLES.UNUSED_ENTITIES,
-				options[OPTION.HIDE_RELOAD_RESOURCES]
-					&& STYLES.RELOAD_RESOURCES,
-				options[OPTION.HIDE_EDIT_DASHBOARD]
-					&& STYLES.EDIT_DASHBOARD,
-				options[OPTION.BLOCK_OVERFLOW]
-					&& STYLES.BLOCK_OVERFLOW,
-				(options[OPTION.HIDE_MENU_BUTTON] || options[OPTION.HIDE_SIDEBAR])
-					&& STYLES.MENU_BUTTON_BURGER
-			];
+			const styles = getCSSInJSArray([
+				[options[OPTION.HIDE_ADD_TO_HOME_ASSISTANT], STYLES.ADD_TO_HOME_ASSISTANT],
+				[options[OPTION.HIDE_OVERFLOW], STYLES.OVERFLOW_MENU],
+				[options[OPTION.HIDE_SEARCH], STYLES.SEARCH],
+				[options[OPTION.HIDE_ASSISTANT], STYLES.ASSISTANT],
+				[options[OPTION.HIDE_REFRESH], STYLES.REFRESH],
+				[options[OPTION.HIDE_UNUSED_ENTITIES], STYLES.UNUSED_ENTITIES],
+				[options[OPTION.HIDE_RELOAD_RESOURCES], STYLES.RELOAD_RESOURCES],
+				[options[OPTION.HIDE_EDIT_DASHBOARD], STYLES.EDIT_DASHBOARD],
+				[options[OPTION.BLOCK_OVERFLOW], STYLES.BLOCK_OVERFLOW],
+				[options[OPTION.HIDE_MENU_BUTTON] || options[OPTION.HIDE_SIDEBAR], STYLES.MENU_BUTTON_BURGER]
+			]);
 			this.styleManager.addStyle(styles, this.appToolbar);
 			if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) {
 				if (options[OPTION.HIDE_ADD_TO_HOME_ASSISTANT]) setCache(TRUE, OPTION.HIDE_ADD_TO_HOME_ASSISTANT);
@@ -507,20 +496,21 @@ class KioskMode implements KioskModeRunner {
 			return;
 		}
 
-		this.HAMoreInfoDialogElements.HA_DIALOG
+		const menuItemsPromises = this.HAMoreInfoDialogElements.HA_DIALOG
 			.selector.query(`:scope > ${ELEMENT.MENU_ITEM}`)
-			.all
-			.then((menuItems: NodeListOf<HTMLElement>) => {
-				addDialogsMenuItemsDataSelectors(menuItems, this.menuTranslations);
-			});
+			.all as Promise<NodeListOf<HTMLElement>>;
 
-		const dialog = await this.HAMoreInfoDialogElements.HA_DIALOG.element;
+		menuItemsPromises.then((menuItems: NodeListOf<HTMLElement>) => {
+			addDialogsMenuItemsDataSelectors(menuItems, this.menuTranslations);
+		});
+
+		const dialog = await this.HAMoreInfoDialogElements.HA_DIALOG.element as HTMLElement;
 		const moreInfoDialogContent = this.HAMoreInfoDialogElements.HA_DIALOG_CONTENT;
 		const MORE_INFO_CHILD_ROOT = moreInfoDialogContent
 			.selector
 			.query(`${ELEMENT.HA_DIALOG_MORE_INFO}, ${ELEMENT.HA_DIALOG_MORE_INFO_HISTORY_AND_LOGBOOK}`)
 			.$;
-		const moreInfo = await MORE_INFO_CHILD_ROOT.element;
+		const moreInfo = await MORE_INFO_CHILD_ROOT.element as ShadowRoot;
 
 		// General dialog elements
 		if (
@@ -530,15 +520,21 @@ class KioskMode implements KioskModeRunner {
 			options[OPTION.HIDE_DIALOG_HEADER_SETTINGS] ||
 			options[OPTION.HIDE_DIALOG_HEADER_OVERFLOW]
 		) {
-			const styles = [
-				options[OPTION.HIDE_DIALOG_HEADER_BREADCRUMB_NAVIGATION] && STYLES.DIALOG_HEADER_BREADCRUMB_NAVIGATION,
-				(options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_HISTORY])
-					&& STYLES.DIALOG_HEADER_HISTORY,
-				(options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_SETTINGS])
-					&& STYLES.DIALOG_HEADER_SETTINGS,
-				(options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_OVERFLOW])
-					&& STYLES.DIALOG_HEADER_OVERFLOW
-			];
+			const styles = getCSSInJSArray([
+				[options[OPTION.HIDE_DIALOG_HEADER_BREADCRUMB_NAVIGATION], STYLES.DIALOG_HEADER_BREADCRUMB_NAVIGATION],
+				[
+					options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_HISTORY],
+					STYLES.DIALOG_HEADER_HISTORY
+				],
+				[
+					options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_SETTINGS],
+					STYLES.DIALOG_HEADER_SETTINGS
+				],
+				[
+					options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_OVERFLOW],
+					STYLES.DIALOG_HEADER_OVERFLOW
+				]
+			]);
 			this.styleManager.addStyle(styles, dialog);
 			if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) {
 				if (options[OPTION.HIDE_DIALOG_HEADER_BREADCRUMB_NAVIGATION]) setCache(TRUE, OPTION.HIDE_DIALOG_HEADER_BREADCRUMB_NAVIGATION);
@@ -566,7 +562,7 @@ class KioskMode implements KioskModeRunner {
 			.query(ELEMENT.HA_DIALOG_CLIMATE_CIRCULAR_SLIDER)
 			.$;
 
-		haDialogClimate.element.then((haDialogClimate: ShadowRoot): void => {
+		(haDialogClimate.element as Promise<ShadowRoot>).then((haDialogClimate: ShadowRoot): void => {
 			if (
 				options[OPTION.HIDE_DIALOG_CLIMATE_ACTIONS] ||
 				options[OPTION.HIDE_DIALOG_CLIMATE_SETTINGS_ACTIONS]
@@ -581,7 +577,7 @@ class KioskMode implements KioskModeRunner {
 			}
 		});
 
-		haDialogClimateTemperature.element.then((haDialogClimateTemperature: ShadowRoot): void => {
+		(haDialogClimateTemperature.element as Promise<ShadowRoot>).then((haDialogClimateTemperature: ShadowRoot): void => {
 			if (
 				options[OPTION.HIDE_DIALOG_CLIMATE_ACTIONS] ||
 				options[OPTION.HIDE_DIALOG_CLIMATE_TEMPERATURE_ACTIONS]
@@ -595,7 +591,7 @@ class KioskMode implements KioskModeRunner {
 			}
 		});
 
-		haDialogClimateCircularSlider.element.then((haDialogClimateCircularSlider: ShadowRoot) => {
+		(haDialogClimateCircularSlider.element as Promise<ShadowRoot>).then((haDialogClimateCircularSlider: ShadowRoot) => {
 			if (
 				options[OPTION.HIDE_DIALOG_CLIMATE_ACTIONS] ||
 				options[OPTION.HIDE_DIALOG_CLIMATE_TEMPERATURE_ACTIONS]
@@ -607,7 +603,7 @@ class KioskMode implements KioskModeRunner {
 		});
 
 		// Dialog children
-		MORE_INFO_CHILD_ROOT
+		const dialogChildShadowRootPromise = MORE_INFO_CHILD_ROOT
 			.query(ELEMENT.HA_DIALOG_MORE_INFO_CONTENT)
 			.$
 			.query(
@@ -625,75 +621,94 @@ class KioskMode implements KioskModeRunner {
 				].join(',')
 			)
 			.$
-			.element
-			.then((dialogChild: ShadowRoot) => {
+			.element as Promise<ShadowRoot>;
 
-				if (
-					options[OPTION.HIDE_DIALOG_TIMER_ACTIONS] ||
-					options[OPTION.HIDE_DIALOG_MEDIA_ACTIONS] ||
-					options[OPTION.HIDE_DIALOG_UPDATE_ACTIONS] ||
-					options[OPTION.HIDE_DIALOG_CAMERA_ACTIONS] ||
-					options[OPTION.HIDE_DIALOG_LIGHT_ACTIONS] ||
-					options[OPTION.HIDE_DIALOG_LIGHT_CONTROL_ACTIONS] ||
-					options[OPTION.HIDE_DIALOG_LIGHT_COLOR_ACTIONS] ||
-					options[OPTION.HIDE_DIALOG_LIGHT_SETTINGS_ACTIONS]
-				) {
-					const styles = [
-						options[OPTION.HIDE_DIALOG_TIMER_ACTIONS] &&
-						dialogChild.host.localName === ELEMENT.HA_DIALOG_TIMER
-							&& STYLES.DIALOG_TIMER_ACTIONS,
-						options[OPTION.HIDE_DIALOG_MEDIA_ACTIONS] &&
-						dialogChild.host.localName === ELEMENT.HA_DIALOG_MEDIA_PLAYER
-							&& STYLES.DIALOG_MEDIA_ACTIONS,
-						options[OPTION.HIDE_DIALOG_UPDATE_ACTIONS] &&
-						dialogChild.host.localName === ELEMENT.HA_DIALOG_UPDATE
-							&& STYLES.DIALOG_UPDATE_ACTIONS,
-						dialogChild.host.localName === ELEMENT.HA_DIALOG_CAMERA
-							&& STYLES.DIALOG_CAMERA_ACTIONS,
+		dialogChildShadowRootPromise.then((dialogChild: ShadowRoot) => {
+
+			if (
+				options[OPTION.HIDE_DIALOG_TIMER_ACTIONS] ||
+				options[OPTION.HIDE_DIALOG_MEDIA_ACTIONS] ||
+				options[OPTION.HIDE_DIALOG_UPDATE_ACTIONS] ||
+				options[OPTION.HIDE_DIALOG_CAMERA_ACTIONS] ||
+				options[OPTION.HIDE_DIALOG_LIGHT_ACTIONS] ||
+				options[OPTION.HIDE_DIALOG_LIGHT_CONTROL_ACTIONS] ||
+				options[OPTION.HIDE_DIALOG_LIGHT_COLOR_ACTIONS] ||
+				options[OPTION.HIDE_DIALOG_LIGHT_SETTINGS_ACTIONS]
+			) {
+				const styles = getCSSInJSArray([
+					[
+						(
+							options[OPTION.HIDE_DIALOG_TIMER_ACTIONS] &&
+							dialogChild.host.localName === ELEMENT.HA_DIALOG_TIMER
+						),
+						STYLES.DIALOG_TIMER_ACTIONS
+					],
+					[
+						(
+							options[OPTION.HIDE_DIALOG_MEDIA_ACTIONS] &&
+							dialogChild.host.localName === ELEMENT.HA_DIALOG_MEDIA_PLAYER
+						),
+						STYLES.DIALOG_MEDIA_ACTIONS
+					],
+					[
+						(
+							options[OPTION.HIDE_DIALOG_UPDATE_ACTIONS] &&
+							dialogChild.host.localName === ELEMENT.HA_DIALOG_UPDATE
+						),
+						STYLES.DIALOG_UPDATE_ACTIONS
+					],
+					[
+						dialogChild.host.localName === ELEMENT.HA_DIALOG_CAMERA,
+						STYLES.DIALOG_CAMERA_ACTIONS
+					],
+					[
 						(
 							options[OPTION.HIDE_DIALOG_LIGHT_ACTIONS] ||
 							options[OPTION.HIDE_DIALOG_LIGHT_CONTROL_ACTIONS]
-						)
-							&& STYLES.DIALOG_LIGHT_CONTROL_ACTIONS,
+						),
+						STYLES.DIALOG_LIGHT_CONTROL_ACTIONS
+					],
+					[
 						(
 							options[OPTION.HIDE_DIALOG_LIGHT_ACTIONS] ||
 							options[OPTION.HIDE_DIALOG_LIGHT_COLOR_ACTIONS]
-						)
-							&& STYLES.DIALOG_LIGHT_COLOR_ACTIONS,
+						),
+						STYLES.DIALOG_LIGHT_COLOR_ACTIONS
+					],
+					[
 						(
 							options[OPTION.HIDE_DIALOG_LIGHT_ACTIONS] ||
 							options[OPTION.HIDE_DIALOG_LIGHT_SETTINGS_ACTIONS]
-						)
-							&& STYLES.DIALOG_LIGHT_SETTINGS_ACTIONS
-					];
-					this.styleManager.addStyle(styles, dialogChild);
-					if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) {
-						if (options[OPTION.HIDE_DIALOG_TIMER_ACTIONS])          setCache(TRUE, OPTION.HIDE_DIALOG_TIMER_ACTIONS);
-						if (options[OPTION.HIDE_DIALOG_MEDIA_ACTIONS])          setCache(TRUE, OPTION.HIDE_DIALOG_MEDIA_ACTIONS);
-						if (options[OPTION.HIDE_DIALOG_UPDATE_ACTIONS])         setCache(TRUE, OPTION.HIDE_DIALOG_UPDATE_ACTIONS);
-						if (options[OPTION.HIDE_DIALOG_CAMERA_ACTIONS])         setCache(TRUE, OPTION.HIDE_DIALOG_CAMERA_ACTIONS);
-						if (options[OPTION.HIDE_DIALOG_LIGHT_ACTIONS])          setCache(TRUE, OPTION.HIDE_DIALOG_LIGHT_ACTIONS);
-						if (options[OPTION.HIDE_DIALOG_LIGHT_CONTROL_ACTIONS])  setCache(TRUE, OPTION.HIDE_DIALOG_LIGHT_CONTROL_ACTIONS);
-						if (options[OPTION.HIDE_DIALOG_LIGHT_COLOR_ACTIONS])    setCache(TRUE, OPTION.HIDE_DIALOG_LIGHT_COLOR_ACTIONS);
-						if (options[OPTION.HIDE_DIALOG_LIGHT_SETTINGS_ACTIONS]) setCache(TRUE, OPTION.HIDE_DIALOG_LIGHT_SETTINGS_ACTIONS);
-					}
-				} else {
-					this.styleManager.removeStyle(dialogChild);
+						),
+						STYLES.DIALOG_LIGHT_SETTINGS_ACTIONS
+					]
+				]);
+				this.styleManager.addStyle(styles, dialogChild);
+				if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) {
+					if (options[OPTION.HIDE_DIALOG_TIMER_ACTIONS])          setCache(TRUE, OPTION.HIDE_DIALOG_TIMER_ACTIONS);
+					if (options[OPTION.HIDE_DIALOG_MEDIA_ACTIONS])          setCache(TRUE, OPTION.HIDE_DIALOG_MEDIA_ACTIONS);
+					if (options[OPTION.HIDE_DIALOG_UPDATE_ACTIONS])         setCache(TRUE, OPTION.HIDE_DIALOG_UPDATE_ACTIONS);
+					if (options[OPTION.HIDE_DIALOG_CAMERA_ACTIONS])         setCache(TRUE, OPTION.HIDE_DIALOG_CAMERA_ACTIONS);
+					if (options[OPTION.HIDE_DIALOG_LIGHT_ACTIONS])          setCache(TRUE, OPTION.HIDE_DIALOG_LIGHT_ACTIONS);
+					if (options[OPTION.HIDE_DIALOG_LIGHT_CONTROL_ACTIONS])  setCache(TRUE, OPTION.HIDE_DIALOG_LIGHT_CONTROL_ACTIONS);
+					if (options[OPTION.HIDE_DIALOG_LIGHT_COLOR_ACTIONS])    setCache(TRUE, OPTION.HIDE_DIALOG_LIGHT_COLOR_ACTIONS);
+					if (options[OPTION.HIDE_DIALOG_LIGHT_SETTINGS_ACTIONS]) setCache(TRUE, OPTION.HIDE_DIALOG_LIGHT_SETTINGS_ACTIONS);
 				}
+			} else {
+				this.styleManager.removeStyle(dialogChild);
+			}
 
-			});
+		});
 
 		// History and Logbook
 		if (
 			options[OPTION.HIDE_DIALOG_HISTORY] ||
 			options[OPTION.HIDE_DIALOG_LOGBOOK]
 		) {
-			const styles = [
-				options[OPTION.HIDE_DIALOG_HISTORY]
-					&& STYLES.DIALOG_HISTORY,
-				options[OPTION.HIDE_DIALOG_LOGBOOK]
-					&& STYLES.DIALOG_LOGBOOK
-			];
+			const styles = getCSSInJSArray([
+				[options[OPTION.HIDE_DIALOG_HISTORY], STYLES.DIALOG_HISTORY],
+				[options[OPTION.HIDE_DIALOG_LOGBOOK], STYLES.DIALOG_LOGBOOK]
+			]);
 			this.styleManager.addStyle(styles, moreInfo);
 			if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) {
 				if (options[OPTION.HIDE_DIALOG_HISTORY]) setCache(TRUE, OPTION.HIDE_DIALOG_HISTORY);
@@ -703,31 +718,33 @@ class KioskMode implements KioskModeRunner {
 			this.styleManager.removeStyle(moreInfo);
 		}
 
-		MORE_INFO_CHILD_ROOT
+		const dialogHistoryShadowRootPromise = MORE_INFO_CHILD_ROOT
 			.query(ELEMENT.HA_DIALOG_HISTORY)
 			.$
-			.element
-			.then((dialogHistory: ShadowRoot) => {
-				if (options[OPTION.HIDE_DIALOG_HISTORY_SHOW_MORE]) {
-					this.styleManager.addStyle(STYLES.DIALOG_SHOW_MORE, dialogHistory);
-					if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) setCache(TRUE, OPTION.HIDE_DIALOG_HISTORY_SHOW_MORE);
-				} else {
-					this.styleManager.removeStyle(dialogHistory);
-				}
-			});
+			.element as Promise<ShadowRoot>;
 
-		MORE_INFO_CHILD_ROOT
+		dialogHistoryShadowRootPromise.then((dialogHistory: ShadowRoot) => {
+			if (options[OPTION.HIDE_DIALOG_HISTORY_SHOW_MORE]) {
+				this.styleManager.addStyle(STYLES.DIALOG_SHOW_MORE, dialogHistory);
+				if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) setCache(TRUE, OPTION.HIDE_DIALOG_HISTORY_SHOW_MORE);
+			} else {
+				this.styleManager.removeStyle(dialogHistory);
+			}
+		});
+
+		const dialogLogbookShadowRootPromise = MORE_INFO_CHILD_ROOT
 			.query(ELEMENT.HA_DIALOG_LOGBOOK)
 			.$
-			.element
-			.then((dialogLogbook: ShadowRoot) => {
-				if (options[OPTION.HIDE_DIALOG_LOGBOOK_SHOW_MORE]) {
-					this.styleManager.addStyle(STYLES.DIALOG_SHOW_MORE, dialogLogbook);
-					if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) setCache(TRUE, OPTION.HIDE_DIALOG_LOGBOOK_SHOW_MORE);
-				} else {
-					this.styleManager.removeStyle(dialogLogbook);
-				}
-			});
+			.element as Promise<ShadowRoot>;
+
+		dialogLogbookShadowRootPromise.then((dialogLogbook: ShadowRoot) => {
+			if (options[OPTION.HIDE_DIALOG_LOGBOOK_SHOW_MORE]) {
+				this.styleManager.addStyle(STYLES.DIALOG_SHOW_MORE, dialogLogbook);
+				if (queryString(SPECIAL_QUERY_PARAMS.CACHE)) setCache(TRUE, OPTION.HIDE_DIALOG_LOGBOOK_SHOW_MORE);
+			} else {
+				this.styleManager.removeStyle(dialogLogbook);
+			}
+		});
 
 	}
 
@@ -744,34 +761,38 @@ class KioskMode implements KioskModeRunner {
 
 		if (!this.menuTranslations) return;
 
-		this.HAElements.HEADER
+		const haIconButtonsPromise = this.HAElements.HEADER
 			.selector
-			.query(`${ELEMENT.TOOLBAR} > ${ELEMENT.ACTION_ITEMS} > ${ELEMENT.MENU_ITEM}`).all
-			.then((haIconButtons: NodeListOf<HTMLElement>) => {
-				addMenuItemsDataSelectors(haIconButtons, this.menuTranslations);
-			});
+			.query(`${ELEMENT.TOOLBAR} > ${ELEMENT.ACTION_ITEMS} > ${ELEMENT.MENU_ITEM}`)
+			.all as Promise<NodeListOf<HTMLElement>>;
 
-		this.HAElements.HEADER
+		haIconButtonsPromise.then((haIconButtons: NodeListOf<HTMLElement>) => {
+			addMenuItemsDataSelectors(haIconButtons, this.menuTranslations);
+		});
+
+		const headerDropdownsPromise = this.HAElements.HEADER
 			.selector
 			.query(`${ELEMENT.TOOLBAR} > ${ELEMENT.ACTION_ITEMS} > ${ELEMENT.DROPDOWN}`)
-			.all
-			.then((headerDropdowns: NodeListOf<HTMLElement>) => {
-				addHeaderDropdownsDataSelectors(
-					headerDropdowns,
-					this.menuTranslations
-				);
-			});
+			.all as Promise<NodeListOf<HTMLElement>>;
 
-		this.HAElements.HEADER
+		headerDropdownsPromise.then((headerDropdowns: NodeListOf<HTMLElement>) => {
+			addHeaderDropdownsDataSelectors(
+				headerDropdowns,
+				this.menuTranslations
+			);
+		});
+
+		const dropdownMenuItemsPromise = this.HAElements.HEADER
 			.selector
 			.query(`${ELEMENT.TOOLBAR} ${ELEMENT.DROPDOWN_MENU_ITEM}`)
-			.all
-			.then((dropdownMenuItems: NodeListOf<HTMLElement>) => {
-				addDropdownMenuItemsDataSelectors(
-					dropdownMenuItems,
-					this.menuTranslations
-				);
-			});
+			.all as Promise<NodeListOf<HTMLElement>>;
+
+		dropdownMenuItemsPromise.then((dropdownMenuItems: NodeListOf<HTMLElement>) => {
+			addDropdownMenuItemsDataSelectors(
+				dropdownMenuItems,
+				this.menuTranslations
+			);
+		});
 	}
 
 	protected blockEventHandler(event: Event) {
@@ -803,7 +824,7 @@ class KioskMode implements KioskModeRunner {
 		option: OPTION | DEBUG_CONFIG_OPTION | CONDITIONAL_OPTION
 	) {
 		const panelUrl = this._getPanelUrl();
-		const value = mergedConfig[option];
+		const value = mergedConfig[option]!;
 
 		const executeRendering = (value: string, result: unknown): void => {
 			if (this._getPanelUrl() === panelUrl) {
