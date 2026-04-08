@@ -34,7 +34,7 @@ const CONDITIONAL_OPTION_VALUES = Object.values(CONDITIONAL_OPTION);
 
 export class ConsoleMessenger {
 
-	public static logInfo() {
+	public static logInfo(): void {
 		const contents: string[] = [];
 		const styles: string[] = [];
 		const lastIndex = LINES.length - 1;
