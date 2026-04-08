@@ -29,6 +29,11 @@ jobs:
         run: |
           if [[ ${{ github.ref_type }} == "tag" ]]; then
             echo "EVENT_TYPE=tag" >> $GITHUB_OUTPUT
+            if [[ ${{ github.ref_name }} =~ -es5(\.[0-9]+)?$ ]]; then
+              echo "IS_ES5_RELEASE=true" >> $GITHUB_OUTPUT
+            else
+              echo "IS_ES5_RELEASE=false" >> $GITHUB_OUTPUT
+            fi
             if [[ ${{ github.event.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+-(alpha|beta|rc)(\.[0-9]+)?$ ]]; then
               echo "PRERELEASE=true" >> $GITHUB_OUTPUT
             else
@@ -38,6 +43,7 @@ jobs:
           else
             echo "EVENT_TYPE=push" >> $GITHUB_OUTPUT
             echo "PRERELEASE=false" >> $GITHUB_OUTPUT
+            echo "IS_ES5_RELEASE=false" >> $GITHUB_OUTPUT
             echo "TARGET_COMMITISH=${{ github.event.repository.default_branch }}" >> $GITHUB_OUTPUT
           fi
       - name: Checkout
@@ -84,6 +90,9 @@ jobs:
           prerelease: ${{ steps.check-event.outputs.PRERELEASE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare HACS asset for selected release channel
+        if: steps.check-event.outputs.EVENT_TYPE == 'tag' && steps.check-event.outputs.IS_ES5_RELEASE == 'true'
+        run: cp dist/kiosk-mode-es5.js dist/kiosk-mode.js
       - name: Upload release assets
         if: steps.check-event.outputs.EVENT_TYPE == 'tag'
         uses: softprops/action-gh-release@v2

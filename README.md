@@ -18,9 +18,10 @@ Hides the header and/or sidebar drawer in [Home Assistant](https://www.home-assi
 **Follow only one of two installation methods below, HACS or Manually:**
 
 > [!NOTE]
-> This branch publishes legacy ES5 builds using tags/releases with the `-es5` suffix (for example `v13.0.0-es5`).
-> These are alternate stable releases for legacy devices, not prereleases.
-> If you are using an older device/browser engine, prefer these `-es5` releases.
+> This repository publishes two stable release channels:
+> 1. `vX.X.X` for the standard ES6 build.
+> 2. `vX.X.X-es5` for the legacy ES5 build.
+> In HACS, both channels appear as selectable versions in the download menu.
 
 >If you want to learn how to install and set some basic configurations in `kiosk-mode` through a video, check the [next one](https://youtu.be/G3lT4zgjER8) from [@smarthomejunkie](https://github.com/smarthomejunkie).
 
