@@ -55,7 +55,7 @@ Each stage must pass all of the following before moving forward:
 - [x] Stage 3: Build Toolchain Incremental Updates
 - [x] Stage 4: Introduce Parallel Modern Build Output
 - [x] Stage 5: TypeScript 6 Migration in Controlled Slices
-- [ ] Stage 6: Artifact and Build Pipeline Parity Check
+- [x] Stage 6: Artifact and Build Pipeline Parity Check
 - [ ] Stage 7: Runtime Dependency Parity (One Package at a Time)
 - [ ] Stage 8: Runtime Source Parity (One Change Group at a Time)
 - [ ] Stage 9: Optional ES6-First Promotion
@@ -192,7 +192,7 @@ Mini checklist:
 - [x] Scope changes applied only for Stage 6.
 - [x] `pnpm test:ts` passed.
 - [x] `pnpm build` passed.
-- [ ] Legacy device/cast smoke test passed.
+- [x] Legacy device/cast smoke test passed.
 - [x] Validation tag published (if needed).
 - [x] Rollback path documented.
 
@@ -211,12 +211,12 @@ Exit criteria:
 Rollback:
 - Revert only the failing package bump commit.
 Mini checklist:
-- [ ] Scope changes applied only for Stage 7.
-- [ ] `pnpm test:ts` passed.
-- [ ] `pnpm build` passed.
+- [x] Scope changes applied only for Stage 7.
+- [x] `pnpm test:ts` passed.
+- [x] `pnpm build` passed.
 - [ ] Legacy device/cast smoke test passed.
 - [ ] Validation tag published (if needed).
-- [ ] Rollback path documented.
+- [x] Rollback path documented.
 
 ### Stage 8: Runtime Source Parity (One Change Group at a Time)
 Scope:
@@ -291,7 +291,8 @@ Entries:
 - 2026-04-08 | Stage 5 Slice 2 | Applied console-helper strictness updates in `src/console-messenger.ts` (typed method signature hardening) and evaluated deprecated CSS API swap; deferred `getCSSRulesString` migration because current dependency typing requires a different input shape that would change behavior | IN PROGRESS | Revert Stage 5 slice 2 commit | Run automated gates and publish next `-es5.N` validation tag for device/cast smoke test.
 - 2026-04-08 | Stage 5 Slice 3 | Reintroduced TS6 migration runtime slice in `src/kiosk-mode.ts` (main runtime orchestration logic), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and `corepack pnpm lint` | IN PROGRESS | Revert Stage 5 slice 3 commit | Publish next `-es5.N` validation tag and run legacy device/cast smoke test.
 - 2026-04-08 | Stage 5 | Completed all TS6 migration slices (utilities/types, console helper updates, and main runtime) with successful validation tag `v13.0.2-es5.3` and user-confirmed legacy device/cast pass | PASS | Revert latest Stage 5 slice commit(s) individually if needed | Begin Stage 6 artifact/build pipeline parity verification.
-- 2026-04-08 | Stage 6 | Verified artifact mapping behavior with fixed code/dependencies: local build produced distinct ES5/modern artifacts and mapping checks passed for both `-es5` and standard tag selection paths; validated with `corepack pnpm test:ts` and `corepack pnpm build`, and published validation tag `v13.0.2-es5.4` | IN PROGRESS | Revert Stage 6 tracking-only commit | Run legacy device/cast smoke test for Stage 6 tag.
+- 2026-04-08 | Stage 6 | Verified artifact mapping behavior with fixed code/dependencies: local build produced distinct ES5/modern artifacts and mapping checks passed for both `-es5` and standard tag selection paths; validated with `corepack pnpm test:ts` and `corepack pnpm build`, published validation tag `v13.0.2-es5.4`, and user-confirmed legacy device/cast pass | PASS | Revert Stage 6 tracking-only commit | Begin Stage 7 dependency parity (single package bumps).
+- 2026-04-08 | Stage 7 Step 1 | Updated `home-assistant-query-selector` (`5.0.0` -> `6.1.0`) as an isolated dependency bump; validated with `corepack pnpm test:ts`, `corepack pnpm build`, and `corepack pnpm lint` | IN PROGRESS | Revert Stage 7 step 1 commit | Publish next `-es5.N` validation tag and run legacy device/cast smoke test.
 
 ## 12. Immediate Next Steps
 - [x] Approve this staged spec.
