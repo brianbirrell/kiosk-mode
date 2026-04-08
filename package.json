@@ -50,7 +50,7 @@
     "globals": "^17.4.0",
     "nyc": "^18.0.0",
     "playwright-test-coverage": "^1.2.12",
-    "rollup": "^4.60.0",
+    "rollup": "^4.60.1",
     "rollup-plugin-istanbul": "^5.0.0",
     "rollup-plugin-ts": "^3.4.5",
     "sinon": "^21.0.3",

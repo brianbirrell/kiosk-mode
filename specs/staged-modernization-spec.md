@@ -127,12 +127,12 @@ Deliverables:
 Exit criteria:
 - Generated legacy artifact remains stable on target device.
 Mini checklist:
-- [ ] Scope changes applied only for Stage 3.
-- [ ] `pnpm test:ts` passed.
-- [ ] `pnpm build` passed.
+- [x] Scope changes applied only for Stage 3.
+- [x] `pnpm test:ts` passed.
+- [x] `pnpm build` passed.
 - [ ] Legacy device/cast smoke test passed.
 - [ ] Validation tag published (if needed).
-- [ ] Rollback path documented.
+- [x] Rollback path documented.
 
 ### Stage 4: Introduce Parallel Modern Build Output
 Scope:
@@ -217,6 +217,7 @@ Entries:
 - 2026-04-07 | Stage 0 | Locked legacy baseline on `compat/rollback-ts6-es5`, validated with `corepack pnpm test:ts` and `corepack pnpm build`, published legacy tags `v13.0.0-es5` and `v13.0.1-es5` | PASS | Not needed | Begin Stage 1 dependency groups.
 - 2026-04-07 | Stage 1 | Updated low-risk dev dependency group only: `@types/node` (`25.5.0` -> `25.5.2`) and `@types/sinon` (`21.0.0` -> `21.0.1`), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and successful legacy device/cast smoke test on `v13.0.1-es5.1` | PASS | `git revert 89a1e57` and `git revert 5f3e977` if needed | Begin Stage 2 runtime library updates one package at a time.
 - 2026-04-08 | Stage 2 | Updated first runtime package only: `get-promisable-result` (`1.0.2` -> `2.0.0`), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and successful legacy device/cast smoke test on `v13.0.1-es5.2` | PASS | `git revert d90d059` and `git revert d899175` if needed | Begin Stage 3 build toolchain updates in isolated slices.
+- 2026-04-08 | Stage 3 | Updated first build-tool slice only: `rollup` (`4.60.0` -> `4.60.1`), validated with `corepack pnpm test:ts` and `corepack pnpm build` | IN PROGRESS | `git revert <stage3-commit-sha>` | Publish `-es5.N` validation tag and run target-device smoke test.
 
 ## 12. Immediate Next Steps
 - [x] Approve this staged spec.
