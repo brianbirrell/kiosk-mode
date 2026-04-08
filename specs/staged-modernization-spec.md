@@ -193,7 +193,7 @@ Mini checklist:
 - [x] `pnpm test:ts` passed.
 - [x] `pnpm build` passed.
 - [ ] Legacy device/cast smoke test passed.
-- [ ] Validation tag published (if needed).
+- [x] Validation tag published (if needed).
 - [x] Rollback path documented.
 
 ### Stage 7: Runtime Dependency Parity (One Package at a Time)
@@ -291,7 +291,7 @@ Entries:
 - 2026-04-08 | Stage 5 Slice 2 | Applied console-helper strictness updates in `src/console-messenger.ts` (typed method signature hardening) and evaluated deprecated CSS API swap; deferred `getCSSRulesString` migration because current dependency typing requires a different input shape that would change behavior | IN PROGRESS | Revert Stage 5 slice 2 commit | Run automated gates and publish next `-es5.N` validation tag for device/cast smoke test.
 - 2026-04-08 | Stage 5 Slice 3 | Reintroduced TS6 migration runtime slice in `src/kiosk-mode.ts` (main runtime orchestration logic), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and `corepack pnpm lint` | IN PROGRESS | Revert Stage 5 slice 3 commit | Publish next `-es5.N` validation tag and run legacy device/cast smoke test.
 - 2026-04-08 | Stage 5 | Completed all TS6 migration slices (utilities/types, console helper updates, and main runtime) with successful validation tag `v13.0.2-es5.3` and user-confirmed legacy device/cast pass | PASS | Revert latest Stage 5 slice commit(s) individually if needed | Begin Stage 6 artifact/build pipeline parity verification.
-- 2026-04-08 | Stage 6 | Verified artifact mapping behavior with fixed code/dependencies: local build produced distinct ES5/modern artifacts and mapping checks passed for both `-es5` and standard tag selection paths; validated with `corepack pnpm test:ts` and `corepack pnpm build` | IN PROGRESS | Revert Stage 6 tracking-only commit | Publish Stage 6 validation tag and run legacy device/cast smoke test.
+- 2026-04-08 | Stage 6 | Verified artifact mapping behavior with fixed code/dependencies: local build produced distinct ES5/modern artifacts and mapping checks passed for both `-es5` and standard tag selection paths; validated with `corepack pnpm test:ts` and `corepack pnpm build`, and published validation tag `v13.0.2-es5.4` | IN PROGRESS | Revert Stage 6 tracking-only commit | Run legacy device/cast smoke test for Stage 6 tag.
 
 ## 12. Immediate Next Steps
 - [x] Approve this staged spec.
