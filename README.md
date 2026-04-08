@@ -46,7 +46,7 @@ Go to your [configuration.yaml](https://www.home-assistant.io/docs/configuration
 ```yaml
 frontend:
   extra_module_url:
-    - /hacsfiles/kiosk-mode/kiosk-mode.js
+    - /hacsfiles/kiosk-mode/kiosk-mode-es5.js
 ```
 
 <br>
@@ -56,7 +56,7 @@ frontend:
   <summary><b>Manual installation</b></summary>
 <br>
   
-1. Download [kiosk-mode.js](https://github.com/NemesisRE/kiosk-mode/releases/latest) from the latest release and place it in your `www` folder
+1. Download [kiosk-mode-es5.js](https://github.com/NemesisRE/kiosk-mode/releases/latest) from the latest release and place it in your `www` folder
 2. Add the resource:
 
 #### If you are in storage mode (default mode)
@@ -64,7 +64,7 @@ frontend:
 1. Go to `Settings > Dashboards`
 2. Click on the three dots located on the top-right corner and then click on `Resources`
 3. Click on `ADD RESOURCE` on the bottom-right of the screen
-4. Add the URL to the file that you have downloaded previously (e.g `/local/kiosk-mode.js?v=1.0.0`)
+4. Add the URL to the file that you have downloaded previously (e.g `/local/kiosk-mode-es5.js?v=1.0.0`)
 5. Make sure you add the correct version at the end of the URL (e.g. `?v=1.0.0`) because in this way you make Home Assistant to load the new version instead of a version stored in cache
 
 #### If you are in yaml mode
@@ -76,7 +76,7 @@ Go to your [configuration.yaml](https://www.home-assistant.io/docs/configuration
 # after every update to avoid the old version being cached by Home Assistant
 frontend:
   extra_module_url:
-    - /local/kiosk-mode.js?v1.0.0
+    - /local/kiosk-mode-es5.js?v1.0.0
 ```
 
 <br>
