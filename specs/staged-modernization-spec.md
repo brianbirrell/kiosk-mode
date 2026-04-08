@@ -89,7 +89,7 @@ Mini checklist:
 - [x] `pnpm test:ts` passed.
 - [x] `pnpm build` passed.
 - [ ] Legacy device/cast smoke test passed.
-- [ ] Validation tag published (if needed).
+- [x] Validation tag published (if needed).
 - [x] Rollback path documented.
 
 ### Stage 2: Runtime Library Incremental Updates
@@ -220,5 +220,5 @@ Entries:
 ## 12. Immediate Next Steps
 - [x] Approve this staged spec.
 - [x] Start Stage 1 with a single low-risk dependency group.
-- [ ] Publish `-es5.N` validation tag and run target-device smoke test.
+- [x] Publish `-es5.N` validation tag and run target-device smoke test.
 - [ ] Continue only after explicit pass.
