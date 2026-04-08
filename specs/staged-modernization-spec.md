@@ -50,7 +50,7 @@ Each stage must pass all of the following before moving forward:
 
 ### Stage Completion Checklist
 - [x] Stage 0: Stability Lock
-- [ ] Stage 1: Patch/Minor Dependency Updates Only
+- [x] Stage 1: Patch/Minor Dependency Updates Only
 - [ ] Stage 2: Runtime Library Incremental Updates
 - [ ] Stage 3: Build Toolchain Incremental Updates
 - [ ] Stage 4: Introduce Parallel Modern Build Output
@@ -88,7 +88,7 @@ Mini checklist:
 - [x] Scope changes applied only for Stage 1.
 - [x] `pnpm test:ts` passed.
 - [x] `pnpm build` passed.
-- [ ] Legacy device/cast smoke test passed.
+- [x] Legacy device/cast smoke test passed.
 - [x] Validation tag published (if needed).
 - [x] Rollback path documented.
 
@@ -215,10 +215,10 @@ Append entries for each stage:
 
 Entries:
 - 2026-04-07 | Stage 0 | Locked legacy baseline on `compat/rollback-ts6-es5`, validated with `corepack pnpm test:ts` and `corepack pnpm build`, published legacy tags `v13.0.0-es5` and `v13.0.1-es5` | PASS | Not needed | Begin Stage 1 dependency groups.
-- 2026-04-07 | Stage 1 | Updated low-risk dev dependency group only: `@types/node` (`25.5.0` -> `25.5.2`) and `@types/sinon` (`21.0.0` -> `21.0.1`), validated with `corepack pnpm test:ts` and `corepack pnpm build` | IN PROGRESS | `git revert <stage1-commit-sha>` | Publish `-es5.N` validation tag and run target-device smoke test.
+- 2026-04-07 | Stage 1 | Updated low-risk dev dependency group only: `@types/node` (`25.5.0` -> `25.5.2`) and `@types/sinon` (`21.0.0` -> `21.0.1`), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and successful legacy device/cast smoke test on `v13.0.1-es5.1` | PASS | `git revert 89a1e57` and `git revert 5f3e977` if needed | Begin Stage 2 runtime library updates one package at a time.
 
 ## 12. Immediate Next Steps
 - [x] Approve this staged spec.
 - [x] Start Stage 1 with a single low-risk dependency group.
 - [x] Publish `-es5.N` validation tag and run target-device smoke test.
-- [ ] Continue only after explicit pass.
+- [x] Continue only after explicit pass.
