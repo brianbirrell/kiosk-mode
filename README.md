@@ -19,6 +19,7 @@ Hides the header and/or sidebar drawer in [Home Assistant](https://www.home-assi
 
 > [!NOTE]
 > This branch publishes legacy ES5 builds using tags/releases with the `-es5` suffix (for example `v13.0.0-es5`).
+> These are alternate stable releases for legacy devices, not prereleases.
 > If you are using an older device/browser engine, prefer these `-es5` releases.
 
 >If you want to learn how to install and set some basic configurations in `kiosk-mode` through a video, check the [next one](https://youtu.be/G3lT4zgjER8) from [@smarthomejunkie](https://github.com/smarthomejunkie).
