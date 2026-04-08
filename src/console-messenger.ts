@@ -1,6 +1,6 @@
 import { KioskConfig } from '@types';
 import { NAMESPACE, CONDITIONAL_OPTION } from '@constants';
-import { getCSSRulesString } from 'home-assistant-styles-manager';
+import { getCSSString } from 'home-assistant-styles-manager';
 import { version } from '../package.json';
 
 interface Line {
@@ -67,7 +67,7 @@ export class ConsoleMessenger {
 			}
 
 			styles.push(
-				getCSSRulesString({
+				getCSSString({
 					...commonStyles,
 					'background'   : line.background || 'white',
 					'color'        : line.color || '#424242',
@@ -79,7 +79,7 @@ export class ConsoleMessenger {
 			);
 
 			styles.push(
-				getCSSRulesString({
+				getCSSString({
 					...commonStyles,
 					'background'   : line.background || 'white',
 					'color'        : line.color || 'white',

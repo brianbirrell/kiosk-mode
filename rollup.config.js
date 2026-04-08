@@ -1,4 +1,4 @@
-import ts from '@rollup/plugin-typescript';
+import ts from 'rollup-plugin-ts';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -9,7 +9,9 @@ export default [
 		plugins: [
 			nodeResolve(),
 			json(),
-			ts(),
+			ts({
+				browserslist: false
+			}),
 			terser({
 				output: {
 					comments: false
@@ -27,32 +29,7 @@ export default [
 			nodeResolve(),
 			json(),
 			ts({
-				compilerOptions: {
-					target: 'es5',
-				},
-				ignoreDeprecations: '6.0'
-			}),
-			terser({
-				output: {
-					comments: false
-				}
-			})
-		],
-		input: 'src/kiosk-mode.ts',
-		output: {
-			file: 'dist/kiosk-mode-es5.js',
-			format: 'iife'
-		}
-	},
-	{
-		plugins: [
-			nodeResolve(),
-			json(),
-			ts({
-				compilerOptions: {
-                    outDir: undefined,
-                    removeComments: false
-                }
+				browserslist: false
 			}),
 			istanbul({
 				exclude: [

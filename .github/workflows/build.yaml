@@ -89,4 +89,3 @@ jobs:
           tag_name: ${{ github.ref_name }}
           files: |
             dist/kiosk-mode.js
-            dist/kiosk-mode-es5.js
