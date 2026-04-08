@@ -131,7 +131,7 @@ Mini checklist:
 - [x] `pnpm test:ts` passed.
 - [x] `pnpm build` passed.
 - [ ] Legacy device/cast smoke test passed.
-- [ ] Validation tag published (if needed).
+- [x] Validation tag published (if needed).
 - [x] Rollback path documented.
 
 ### Stage 4: Introduce Parallel Modern Build Output
