@@ -165,12 +165,12 @@ Exit criteria:
 Rollback:
 - Revert failing slice only.
 Mini checklist:
-- [ ] Scope changes applied only for Stage 5.
-- [ ] `pnpm test:ts` passed.
-- [ ] `pnpm build` passed.
+- [x] Scope changes applied only for Stage 5.
+- [x] `pnpm test:ts` passed.
+- [x] `pnpm build` passed.
 - [ ] Legacy device/cast smoke test passed.
 - [ ] Validation tag published (if needed).
-- [ ] Rollback path documented.
+- [x] Rollback path documented.
 
 ### Stage 6: Optional ES6-First Promotion
 Scope:
@@ -219,6 +219,7 @@ Entries:
 - 2026-04-08 | Stage 2 | Updated first runtime package only: `get-promisable-result` (`1.0.2` -> `2.0.0`), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and successful legacy device/cast smoke test on `v13.0.1-es5.2` | PASS | `git revert d90d059` and `git revert d899175` if needed | Begin Stage 3 build toolchain updates in isolated slices.
 - 2026-04-08 | Stage 3 | Updated first build-tool slice only: `rollup` (`4.60.0` -> `4.60.1`), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and successful legacy device/cast smoke test on `v13.0.1-es5.3` | PASS | `git revert a3d5075` and `git revert 837c30c` if needed | Stage 4 confirmation.
 - 2026-04-08 | Stage 4 | Implemented dual build artifacts (`dist/kiosk-mode-modern.js` + `dist/kiosk-mode-es5.js`) and tag-based CI mapping to publish `dist/kiosk-mode.js` from modern tags or `-es5` tags appropriately; validated with `corepack pnpm test:ts`, `corepack pnpm build`, validation tag `v13.0.1-es5.4`, and successful legacy device/cast smoke test | PASS | Revert Stage 4 commit(s) as a group | Begin Stage 5 TS6 migration slices.
+- 2026-04-08 | Stage 5 Slice 1 | Reintroduced TS6 migration changes in `src/utilities/index.ts` and `src/types/index.ts` only (stronger nullability/field initialization typing and helper extraction), validated with `corepack pnpm test:ts` and `corepack pnpm build` | IN PROGRESS | Revert Stage 5 slice 1 commit | Publish `-es5.N` validation tag and run legacy device/cast smoke test.
 
 ## 12. Immediate Next Steps
 - [x] Approve this staged spec.

@@ -1,5 +1,6 @@
 import { HomeAsssistantExtended, Version } from '@types';
 import { getPromisableResult } from 'get-promisable-result';
+import { CSSInJs } from 'home-assistant-styles-manager';
 import {
 	TRUE,
 	MENU_REFERENCES,
@@ -56,6 +57,13 @@ export const getDisplayNoneRules = (...rules: string[]): Record<string, false> =
 	);
 };
 
+export const getCSSInJSArray = (options: [boolean | undefined, CSSInJs][]): CSSInJs[] => {
+	const activeOptions = options.filter<[boolean, CSSInJs]>((option: [boolean | undefined, CSSInJs]): option is [boolean, CSSInJs] => {
+		return !!option[0];
+	});
+	return activeOptions.map((option: [boolean, CSSInJs]) => option[1]);
+};
+
 export const getMenuTranslations = async(ha: HomeAsssistantExtended): Promise<Record<string, string>> => {
 
 	const referencePaths = Object.entries(MENU_REFERENCES);
@@ -96,7 +104,7 @@ export const addMenuItemsDataSelectors = (
 		) {
 			const labelledBy = haIconButton.getAttribute('aria-labelledby');
 			if (!labelledBy) return;
-			const tooltip = haIconButton.parentElement.querySelector<HTMLElement>(`#${labelledBy.trim()}`);
+			const tooltip = haIconButton.parentElement!.querySelector<HTMLElement>(`#${labelledBy.trim()}`);
 			if (!tooltip) return;
 			const translation = getTranslationWithoutShorcutSuffix(tooltip.textContent);
 			haIconButton.dataset.selector = translations[translation];
@@ -115,8 +123,8 @@ export const addHeaderDropdownsDataSelectors = (
 			menuItem.dataset &&
 			!menuItem.dataset.selector
 		) {
-			const button = menuItem.shadowRoot.querySelector<HTMLElement>(ELEMENT.HA_BUTTON);
-			menuItem.dataset.selector = translations[button.getAttribute('aria-label').trim()];
+			const button = menuItem.shadowRoot!.querySelector<HTMLElement>(ELEMENT.HA_BUTTON);
+			menuItem.dataset.selector = translations[button!.getAttribute('aria-label')!.trim()];
 		}
 	});
 };
@@ -131,8 +139,8 @@ export const addDialogsMenuItemsDataSelectors = (
 			menuItem.dataset &&
 			!menuItem.dataset.selector
 		) {
-			const button = menuItem.shadowRoot.querySelector<HTMLElement>(ELEMENT.HA_BUTTON);
-			menuItem.dataset.selector = translations[button.title.trim()];
+			const button = menuItem.shadowRoot!.querySelector<HTMLElement>(ELEMENT.HA_BUTTON);
+			menuItem.dataset.selector = translations[button!.title.trim()];
 		}
 	});
 };
