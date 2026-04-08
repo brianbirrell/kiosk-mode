@@ -53,7 +53,7 @@ Each stage must pass all of the following before moving forward:
 - [x] Stage 1: Patch/Minor Dependency Updates Only
 - [x] Stage 2: Runtime Library Incremental Updates
 - [x] Stage 3: Build Toolchain Incremental Updates
-- [ ] Stage 4: Introduce Parallel Modern Build Output
+- [x] Stage 4: Introduce Parallel Modern Build Output
 - [ ] Stage 5: TypeScript 6 Migration in Controlled Slices
 - [ ] Stage 6: Optional ES6-First Promotion
 
@@ -147,8 +147,8 @@ Mini checklist:
 - [x] Scope changes applied only for Stage 4.
 - [x] `pnpm test:ts` passed.
 - [x] `pnpm build` passed.
-- [ ] Legacy device/cast smoke test passed.
-- [ ] Validation tag published (if needed).
+- [x] Legacy device/cast smoke test passed.
+- [x] Validation tag published (if needed).
 - [x] Rollback path documented.
 
 ### Stage 5: TypeScript 6 Migration in Controlled Slices
@@ -218,7 +218,7 @@ Entries:
 - 2026-04-07 | Stage 1 | Updated low-risk dev dependency group only: `@types/node` (`25.5.0` -> `25.5.2`) and `@types/sinon` (`21.0.0` -> `21.0.1`), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and successful legacy device/cast smoke test on `v13.0.1-es5.1` | PASS | `git revert 89a1e57` and `git revert 5f3e977` if needed | Begin Stage 2 runtime library updates one package at a time.
 - 2026-04-08 | Stage 2 | Updated first runtime package only: `get-promisable-result` (`1.0.2` -> `2.0.0`), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and successful legacy device/cast smoke test on `v13.0.1-es5.2` | PASS | `git revert d90d059` and `git revert d899175` if needed | Begin Stage 3 build toolchain updates in isolated slices.
 - 2026-04-08 | Stage 3 | Updated first build-tool slice only: `rollup` (`4.60.0` -> `4.60.1`), validated with `corepack pnpm test:ts`, `corepack pnpm build`, and successful legacy device/cast smoke test on `v13.0.1-es5.3` | PASS | `git revert a3d5075` and `git revert 837c30c` if needed | Stage 4 confirmation.
-- 2026-04-08 | Stage 4 | Implemented dual build artifacts (`dist/kiosk-mode-modern.js` + `dist/kiosk-mode-es5.js`) and tag-based CI mapping to publish `dist/kiosk-mode.js` from modern tags or `-es5` tags appropriately; validated with `corepack pnpm test:ts` and `corepack pnpm build` | IN PROGRESS | Revert Stage 4 commit(s) as a group | Publish validation tag and run legacy device/cast smoke test.
+- 2026-04-08 | Stage 4 | Implemented dual build artifacts (`dist/kiosk-mode-modern.js` + `dist/kiosk-mode-es5.js`) and tag-based CI mapping to publish `dist/kiosk-mode.js` from modern tags or `-es5` tags appropriately; validated with `corepack pnpm test:ts`, `corepack pnpm build`, validation tag `v13.0.1-es5.4`, and successful legacy device/cast smoke test | PASS | Revert Stage 4 commit(s) as a group | Begin Stage 5 TS6 migration slices.
 
 ## 12. Immediate Next Steps
 - [x] Approve this staged spec.
