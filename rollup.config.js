@@ -1,4 +1,5 @@
 import ts from '@rollup/plugin-typescript';
+import babel from '@rollup/plugin-babel';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -26,11 +27,23 @@ export default [
 		plugins: [
 			nodeResolve(),
 			json(),
-			ts({
-				compilerOptions: {
-					target: 'es5',
-				},
-				ignoreDeprecations: '6.0'
+			ts(),
+			babel({
+				babelHelpers: 'bundled',
+				extensions: ['.js', '.mjs', '.ts'],
+				exclude: /core-js/,
+				presets: [
+					[
+						'@babel/preset-env',
+						{
+							targets: {
+								ie: '11'
+							},
+							modules: false,
+							bugfixes: true
+						}
+					]
+				]
 			}),
 			terser({
 				output: {
