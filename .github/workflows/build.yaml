@@ -84,6 +84,14 @@ jobs:
           prerelease: ${{ steps.check-event.outputs.PRERELEASE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Select primary release artifact
+        if: steps.check-event.outputs.EVENT_TYPE == 'tag'
+        run: |
+          if [[ "${{ github.ref_name }}" =~ -es5(\.[0-9]+)?$ ]]; then
+            cp dist/kiosk-mode-es5.js dist/kiosk-mode.js
+          else
+            cp dist/kiosk-mode-modern.js dist/kiosk-mode.js
+          fi
       - name: Upload release assets
         if: steps.check-event.outputs.EVENT_TYPE == 'tag'
         uses: softprops/action-gh-release@v2
@@ -91,3 +99,5 @@ jobs:
           tag_name: ${{ github.ref_name }}
           files: |
             dist/kiosk-mode.js
+            dist/kiosk-mode-modern.js
+            dist/kiosk-mode-es5.js

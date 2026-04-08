@@ -10,7 +10,8 @@ export default [
 			nodeResolve(),
 			json(),
 			ts({
-				browserslist: false
+				browserslist: false,
+				tsconfig: 'tsconfig.modern.json'
 			}),
 			terser({
 				output: {
@@ -20,7 +21,27 @@ export default [
 		],
 		input: 'src/kiosk-mode.ts',
 		output: {
-			file: 'dist/kiosk-mode.js',
+			file: 'dist/kiosk-mode-modern.js',
+			format: 'iife'
+		}
+	},
+	{
+		plugins: [
+			nodeResolve(),
+			json(),
+			ts({
+				browserslist: false,
+				tsconfig: 'tsconfig.json'
+			}),
+			terser({
+				output: {
+					comments: false
+				}
+			})
+		],
+		input: 'src/kiosk-mode.ts',
+		output: {
+			file: 'dist/kiosk-mode-es5.js',
 			format: 'iife'
 		}
 	},
