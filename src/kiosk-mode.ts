@@ -766,7 +766,7 @@ class KioskMode implements KioskModeRunner {
 			.query(`${ELEMENT.TOOLBAR} > ${ELEMENT.ACTION_ITEMS} > ${ELEMENT.MENU_ITEM}`)
 			.all as Promise<NodeListOf<HTMLElement>>;
 
-		haIconButtonsPromise.then((haIconButtons: NodeListOf<HTMLElement>) => {
+		haIconButtonsPromise.then((haIconButtons) => {
 			addMenuItemsDataSelectors(haIconButtons, this.menuTranslations);
 		});
 
@@ -784,11 +784,11 @@ class KioskMode implements KioskModeRunner {
 			headerDropdownsPromise,
 			dropdownMenuItemsPromise
 		]).then(([headerDropdowns, dropdownMenuItems]) => {
+
 			addHeaderDropdownsDataSelectors(
 				headerDropdowns,
 				this.menuTranslations
 			);
-
 			addDropdownMenuItemsDataSelectors(
 				dropdownMenuItems,
 				this.menuTranslations
