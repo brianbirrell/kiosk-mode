@@ -1,4 +1,4 @@
-import ts from 'rollup-plugin-ts';
+import ts from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -10,7 +10,6 @@ export default [
 			nodeResolve(),
 			json(),
 			ts({
-				browserslist: false,
 				tsconfig: 'tsconfig.modern.json'
 			}),
 			terser({
@@ -30,7 +29,6 @@ export default [
 			nodeResolve(),
 			json(),
 			ts({
-				browserslist: false,
 				tsconfig: 'tsconfig.json'
 			}),
 			terser({
@@ -50,7 +48,11 @@ export default [
 			nodeResolve(),
 			json(),
 			ts({
-				browserslist: false
+				tsconfig: 'tsconfig.json',
+				compilerOptions: {
+					outDir: undefined,
+					removeComments: false
+				}
 			}),
 			istanbul({
 				exclude: [
