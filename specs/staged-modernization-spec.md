@@ -56,8 +56,8 @@ Each stage must pass all of the following before moving forward:
 - [x] Stage 4: Introduce Parallel Modern Build Output
 - [x] Stage 5: TypeScript 6 Migration in Controlled Slices
 - [x] Stage 6: Artifact and Build Pipeline Parity Check
-- [ ] Stage 7: Runtime Dependency Parity (One Package at a Time)
-- [ ] Stage 8: Runtime Source Parity (One Change Group at a Time)
+- [x] Stage 7: Runtime Dependency Parity (One Package at a Time)
+- [x] Stage 8: Runtime Source Parity (One Change Group at a Time)
 - [ ] Stage 9: Optional ES6-First Promotion
 
 ### Stage 0: Stability Lock (No behavior changes)
@@ -298,7 +298,7 @@ Entries:
 - 2026-04-10 | Stage 7 Step 4 | Updated `shadow-dom-selector` (`5.0.1` -> `6.1.0`) as an isolated dependency bump; resolved peer dependency warning from query-selector 6.1.0; validated with `corepack pnpm test:ts`, `corepack pnpm build`, and `corepack pnpm lint` (all passed cleanly); published validation tag `v13.0.2-es5.8`; user-confirmed legacy device/cast smoke test pass | PASS | Revert Stage 7 step 4 commit | Begin Stage 8 source parity isolation (styles-manager 4.x migration deferred as a dedicated compatibility slice).
 - 2026-04-10 | Stage 8 Group 1 | Reintroduced header selector async-flow parity in `src/kiosk-mode.ts` by restoring synchronized handling for header dropdown and dropdown menu items (`Promise.all` sequencing) while keeping dependencies frozen at Stage 7 state; validated with `corepack pnpm test:ts`, `corepack pnpm build`, and `corepack pnpm lint`; published validation tag `v13.0.2-es5.9`; user-confirmed legacy device/cast smoke test pass | PASS | Revert Stage 8 group 1 commit | Continue Stage 8 with remaining source parity deltas.
 - 2026-04-10 | Stage 8 Group 2 | Reintroduced remaining source parity deltas in `src/kiosk-mode.ts` for the same selector-label flow (removed explicit `NodeListOf<HTMLElement>` callback annotation on menu-item selector promise and restored surrounding block formatting parity) while dependencies remained frozen; validated with `corepack pnpm test:ts`, `corepack pnpm build`, and `corepack pnpm lint`; published validation tag `v13.0.2-es5.10`; user-confirmed legacy device/cast smoke test pass | PASS | Revert Stage 8 group 2 commit | Continue to Stage 8 Group 3 (console-messenger + styles-manager migration).
-- 2026-04-10 | Stage 8 Group 3 | Coupled migration: bumped `home-assistant-styles-manager` (`3.1.0` -> `4.1.2`) and updated `src/console-messenger.ts` to use `getCSSRulesString` replacing the removed `getCSSString` API (4.x absorbed flat CSS-property input into `getCSSRulesString`); validated with `corepack pnpm test:ts`, `corepack pnpm build`, and `corepack pnpm lint`; published validation tag `v13.0.2-es5.11` | IN PROGRESS | Revert Stage 8 group 3 commit | Run legacy device/cast smoke test for this tag.
+- 2026-04-10 | Stage 8 Group 3 | Coupled migration: bumped `home-assistant-styles-manager` (`3.1.0` -> `4.1.2`) and updated `src/console-messenger.ts` to use `getCSSRulesString` replacing the removed `getCSSString` API (4.x absorbed flat CSS-property input into `getCSSRulesString`); validated with `corepack pnpm test:ts`, `corepack pnpm build`, and `corepack pnpm lint`; published validation tag `v13.0.2-es5.11`; user-confirmed legacy device/cast smoke test pass | PASS | Revert Stage 8 group 3 commit | Stage 8 complete — all source parity change groups validated. Proceed to Stage 9 (ES6-first promotion) or release.
 
 ## 12. Immediate Next Steps
 - [x] Approve this staged spec.
