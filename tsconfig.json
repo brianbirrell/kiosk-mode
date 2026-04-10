@@ -3,7 +3,7 @@
     "outDir": "./dist/",
     "module": "esnext",
     "target": "ES6",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "types": ["node"],
     "esModuleInterop": true,
     "resolveJsonModule": true,
