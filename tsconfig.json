@@ -9,6 +9,7 @@
     "resolveJsonModule": true,
     "declaration": false,
     "noImplicitAny": true,
+    "ignoreDeprecations": "6.0",
     "removeComments": true,
     "skipLibCheck": true,
     "rootDir": ".",
