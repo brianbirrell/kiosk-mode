@@ -4,8 +4,8 @@ import {
 	DIALOGS_SELECTORS,
 	TEXT_SELECTORS,
 	ENTITIES
-} from './constants/index.js';
-import { turnBooleanState, goToPage } from './utils/index.js';
+} from './constants';
+import { turnBooleanState, goToPage } from './utils';
 
 test('Option: hide_dialog_header_breadcrumb_navigation', async ({ page }) => {
 

@@ -1,7 +1,7 @@
 import { test, expect } from 'playwright-test-coverage';
 import path from 'path';
-import { SELECTORS, ENTITIES } from './constants/index.js';
-import { turnBooleanState, goToPage } from './utils/index.js';
+import { SELECTORS, ENTITIES } from './constants';
+import { turnBooleanState, goToPage } from './utils';
 
 test('Option: kiosk', async ({ page }) => {
 

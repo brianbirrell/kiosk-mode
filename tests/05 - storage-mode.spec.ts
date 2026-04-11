@@ -1,6 +1,6 @@
 import { test, expect } from 'playwright-test-coverage';
-import { SELECTORS } from './constants/index.js';
-import { changeToStorageMode } from './utils/index.js';
+import { SELECTORS } from './constants';
+import { changeToStorageMode } from './utils';
 
 test('Option: hide_edit_dashboard in storage mode', async ({ page }) => {
 

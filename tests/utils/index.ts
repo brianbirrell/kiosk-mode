@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 import { expect } from 'playwright-test-coverage';
-import { BASE_URL, SELECTORS } from '../constants/index.js';
+import { BASE_URL, SELECTORS } from '../constants';
 
 interface Context {
     id: string;

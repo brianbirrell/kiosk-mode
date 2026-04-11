@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-      "module": "Node16",
-      "target": "ES6",
-      "moduleResolution": "node16",
+    "module": "esnext",
+    "target": "es6",
+    "moduleResolution": "node10",
     "types": ["node"],
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "declaration": false,
     "noImplicitAny": true,
+    "ignoreDeprecations": "6.0",
     "removeComments": true,
     "skipLibCheck": true,
     "rootDir": ".",
