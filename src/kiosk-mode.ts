@@ -59,7 +59,7 @@ import {
 } from '@utilities';
 import { STYLES } from '@styles';
 
-import { ConsoleMessenger } from './console-messenger';
+import { ConsoleMessenger } from './console-messenger.js';
 
 class KioskMode implements KioskModeRunner {
 	constructor() {

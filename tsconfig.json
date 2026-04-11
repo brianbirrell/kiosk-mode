@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "module": "esnext",
-    "target": "es6",
-    "moduleResolution": "bundler",
+      "module": "Node16",
+      "target": "ES6",
+      "moduleResolution": "node16",
     "types": ["node"],
     "esModuleInterop": true,
     "resolveJsonModule": true,

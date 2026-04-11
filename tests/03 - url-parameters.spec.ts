@@ -6,8 +6,8 @@ import {
 	TEXT_SELECTORS,
 	DIALOGS_SELECTORS,
 	ENTITIES
-} from './constants';
-import { goToPageWithParams, turnBooleanState } from './utils';
+} from './constants/index.js';
+import { goToPageWithParams, turnBooleanState } from './utils/index.js';
 
 test('URL Parameter: ?kiosk', async ({ page }) => {
 

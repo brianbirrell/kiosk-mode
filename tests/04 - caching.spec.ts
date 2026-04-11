@@ -5,8 +5,8 @@ import {
 	SELECTORS,
 	DIALOGS_SELECTORS,
 	TEXT_SELECTORS
-} from './constants';
-import { goToPageWithParams, goToPage } from './utils';
+} from './constants/index.js';
+import { goToPageWithParams, goToPage } from './utils/index.js';
 
 [
 	{
