@@ -6,14 +6,14 @@ export const STYLES = {
 		'#view': {
 			minHeight: '100vh !important',
 			KioskHeaderHeight: '0px',
-			paddingTop: 'calc(var(--kiosk-header-height) + env(safe-area-inset-top)) !important'
+			paddingTop: 'calc(var(--kiosk-header-height) + var(--safe-area-inset-top) + var(--view-container-padding-top, 0px)) !important'
 		},
 		'.header': false
 	},
-	SETTINGS: getDisplayNoneRules('ha-md-list-item.configuration'),
-	NOTIFICATIONS: getDisplayNoneRules('ha-md-list-item.notifications'),
-	ACCOUNT: getDisplayNoneRules('ha-md-list-item.user'),
-	LIST_AFTER_SPACER: getDisplayNoneRules('ha-md-list.after-spacer'),
+	SETTINGS: getDisplayNoneRules('ha-list-item-button.configuration'),
+	NOTIFICATIONS: getDisplayNoneRules('ha-list-item-button.notifications'),
+	ACCOUNT: getDisplayNoneRules('ha-list-item-button.user'),
+	LIST_AFTER_SPACER: getDisplayNoneRules('ha-list-nav.after-spacer'),
 	MENU_BUTTON: {
 		...getDisplayNoneRules(
 			':host(:not([expanded])) .menu',
@@ -39,7 +39,7 @@ export const STYLES = {
 	},
 	SIDEBAR: {
 		':host': {
-			MdcDrawerWidth: '0px !important',
+			HaSidebarWidth: '0px !important',
 			KioskSidebarWidth: '0px'
 		},
 		'partial-panel-resolver': {
@@ -50,7 +50,7 @@ export const STYLES = {
 			width: '100% !important'
 		}
 	},
-	ASIDE: getDisplayNoneRules('.mdc-drawer'),
+	DRAWER: getDisplayNoneRules(ELEMENT.WA_DRAWER, ELEMENT.SIDEBAR_SHELL),
 	OVERFLOW_MENU: getDisplayNoneRules(
 		`${ELEMENT.TOOLBAR} > ${ELEMENT.ACTION_ITEMS} > ${ELEMENT.DROPDOWN} > ${ELEMENT.MENU_ITEM}[data-selector="${MENU.OVERFLOW}"]`
 	),
@@ -108,7 +108,7 @@ export const STYLES = {
 	DIALOG_TIMER_ACTIONS: getDisplayNoneRules('.actions'),
 	DIALOG_UPDATE_ACTIONS: getDisplayNoneRules(
 		'.actions',
-		'ha-md-list:has(+ .actions)',
+		'ha-row-item:has(+ .actions)',
 		'hr:has(+ .actions)'
 	),
 	DIALOG_CAMERA_ACTIONS: getDisplayNoneRules('.actions'),
