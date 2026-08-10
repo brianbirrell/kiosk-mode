@@ -41,14 +41,11 @@ jobs:
             echo "TARGET_COMMITISH=${{ github.event.repository.default_branch }}" >> $GITHUB_OUTPUT
           fi
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install pnpm
         uses: pnpm/action-setup@v6
-        with:
-          version: 11
-          run_install: false
       - name: Set-up Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: 'pnpm'
