@@ -38,7 +38,9 @@ export const SELECTORS = {
 	OVERFLOW_MENU_EDIT_MODE: '.action-items > ha-dropdown > ha-icon-button',
 	CODE_EDITOR: 'ha-code-editor[mode="yaml"]',
 	SAVE_BUTTON: 'hui-editor ha-top-app-bar-fixed ha-button[slot="actionItems"]',
-	CLOSE_EDIT_MODE: 'hui-editor ha-top-app-bar-fixed ha-icon-button[slot="navigationIcon"] ha-button[title="Close"]'
+	CLOSE_EDIT_MODE: 'hui-editor ha-top-app-bar-fixed ha-icon-button[slot="navigationIcon"] ha-button[title="Close"]',
+	TOOLS_STATE_PANEL: 'ha-panel-tools',
+	TOOL_STATE_MORE_INFO_ICON: 'tools-state-renderer .entities .row .cell .id-name-container .id-name-row ha-svg-icon[title="More info"]'
 };
 
 export const DIALOGS_SELECTORS = {

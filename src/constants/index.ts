@@ -22,6 +22,7 @@ export enum OPTION {
     HIDE_DIALOG_HEADER_ACTION_ITEMS = 'hide_dialog_header_action_items',
     HIDE_DIALOG_HEADER_HISTORY = 'hide_dialog_header_history',
     HIDE_DIALOG_HEADER_SETTINGS = 'hide_dialog_header_settings',
+    HIDE_DIALOG_HEADER_ADD_TO = 'hide_dialog_header_add_to',
     HIDE_DIALOG_HEADER_OVERFLOW = 'hide_dialog_header_overflow',
     HIDE_DIALOG_HISTORY = 'hide_dialog_history',
     HIDE_DIALOG_LOGBOOK = 'hide_dialog_logbook',
@@ -79,6 +80,7 @@ export enum MENU {
     EDIT_DASHBOARD = 'EDIT_DASHBOARD',
     DIALOG_DISMISS = 'DIALOG_DISMISS',
     DIALOG_HISTORY = 'DIALOG_HISTORY',
+    DIALOG_ADD_TO = 'DIALOG_ADD_TO',
     DIALOG_SETTINGS = 'DIALOG_SETTINGS'
 }
 
@@ -92,6 +94,7 @@ export const MENU_REFERENCES = Object.freeze({
 	[MENU.RELOAD_RESOURCES]: `${MENU_PREFIX}.reload_resources`,
 	[MENU.EDIT_DASHBOARD]: `${MENU_PREFIX}.configure_ui`,
 	[MENU.DIALOG_HISTORY]: `${DIALOGS_PREFIX}.history`,
+	[MENU.DIALOG_ADD_TO]: `${DIALOGS_PREFIX}.add_to.item`,
 	[MENU.DIALOG_SETTINGS]: `${DIALOGS_PREFIX}.settings`,
 	[MENU.DIALOG_DISMISS]: `${COMMON_PREFIX}.close`
 });
@@ -146,6 +149,7 @@ export const RESOURCE_WITH_SUFFIX_REGEXP = /^(.*?)( \([^)]+\))?$/;
 export const TRUE = 'true';
 export const JS_TEMPLATE_REG = /^\s*\[\[\[([\s\S]+)\]\]\]\s*$/;
 export const JINJA_TEMPLATE_REG = /\{\{[\s\S]*\}\}|\{%[\s\S]*%\}/;
+export const DOMAIN_ENTITY_REGEXP = /^\s*([a-z_]+)\.([\w-]+)\s*$/;
 export const CUSTOM_MOBILE_WIDTH_DEFAULT = 812;
 export const TOGGLE_MENU_EVENT = 'hass-toggle-menu';
 export const SIDEBAR_CLOSED_EVENT = 'hass-drawer-closed';

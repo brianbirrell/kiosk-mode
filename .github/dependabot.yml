@@ -6,8 +6,13 @@ updates:
       interval: "weekly"
       day: "sunday"
       time: "09:00"
+    cooldown:
+      default-days: 1
     commit-message:
       prefix: "[Dependencies]"
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       dependencies-prod:
         dependency-type: "production"
