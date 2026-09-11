@@ -26,6 +26,7 @@ import {
 	OPTION,
 	CONDITIONAL_OPTION,
 	DEBUG_CONFIG_OPTION,
+	DOMAIN_ENTITY_REGEXP,
 	SPECIAL_QUERY_PARAMS,
 	ELEMENT,
 	TRUE,
@@ -77,6 +78,25 @@ class KioskMode implements KioskModeRunner {
 
 		const selector = new HAQuerySelector();
 
+		selector.addEventListener(HAQuerySelectorEvent.ON_LISTEN, async (event) => {
+
+			const ha = await event.detail.HOME_ASSISTANT.element as HomeAsssistantExtended;
+
+			this.version = parseVersion(ha.hass?.config?.version);
+			this.user = await getPromisableResult(
+				(): HomeAsssistantExtended['hass']['user'] => ha?.hass?.user,
+				(user: HomeAsssistantExtended['hass']['user']) => !!user,
+				{
+					retries: MAX_ATTEMPTS,
+					delay: RETRY_DELAY,
+					rejectMessage: `${NAMESPACE}: Cannot select ${ELEMENT.HOME_ASSISTANT} > hass > user after {{ retries }} attempts. Giving up!`
+				}
+			);
+
+			this._renderer = await new HomeAssistantJavaScriptTemplates(ha).getRenderer();
+
+		});
+
 		selector.addEventListener(HAQuerySelectorEvent.ON_LOVELACE_PANEL_LOAD, async (event) => {
 
 			this.HAElements = event.detail;
@@ -97,19 +117,16 @@ class KioskMode implements KioskModeRunner {
 			this.appToolbar = await HEADER.selector.query(ELEMENT.TOOLBAR).element as Element;
 			this.sideBarRoot = await HA_SIDEBAR.selector.$.element as ShadowRoot;
 
-			this.user = await getPromisableResult(
-				(): HomeAsssistantExtended['hass']['user'] => this.ha?.hass?.user,
-				(user: HomeAsssistantExtended['hass']['user']) => !!user,
+			// In case that the renderer is not ready, wait for it
+			await getPromisableResult(
+				(): HomeAssistantJavaScriptTemplatesRenderer => this._renderer,
+				(renderer: HomeAssistantJavaScriptTemplatesRenderer) => !!renderer,
 				{
 					retries: MAX_ATTEMPTS,
 					delay: RETRY_DELAY,
-					rejectMessage: `${NAMESPACE}: Cannot select ${ELEMENT.HOME_ASSISTANT} > hass > user after {{ retries }} attempts. Giving up!`
+					shouldReject: false
 				}
 			);
-
-			this._renderer = await new HomeAssistantJavaScriptTemplates(this.ha).getRenderer();
-
-			this.version = parseVersion(this.ha.hass?.config?.version);
 
 			this.run();
 
@@ -126,6 +143,7 @@ class KioskMode implements KioskModeRunner {
 		});
 
 		selector.listen();
+
 		this.resizeWindowBinded = this.resizeWindow.bind(this);
 
 	}
@@ -521,6 +539,7 @@ class KioskMode implements KioskModeRunner {
 			options[OPTION.HIDE_DIALOG_HEADER_BREADCRUMB_NAVIGATION] ||
 			options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] ||
 			options[OPTION.HIDE_DIALOG_HEADER_HISTORY] ||
+			options[OPTION.HIDE_DIALOG_HEADER_ADD_TO] ||
 			options[OPTION.HIDE_DIALOG_HEADER_SETTINGS] ||
 			options[OPTION.HIDE_DIALOG_HEADER_OVERFLOW]
 		) {
@@ -529,6 +548,10 @@ class KioskMode implements KioskModeRunner {
 				[
 					options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_HISTORY],
 					STYLES.DIALOG_HEADER_HISTORY
+				],
+				[
+					options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_ADD_TO],
+					STYLES.DIALOG_HEADER_ADD_TO
 				],
 				[
 					options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS] || options[OPTION.HIDE_DIALOG_HEADER_SETTINGS],
@@ -544,6 +567,7 @@ class KioskMode implements KioskModeRunner {
 				if (options[OPTION.HIDE_DIALOG_HEADER_BREADCRUMB_NAVIGATION]) setCache(TRUE, OPTION.HIDE_DIALOG_HEADER_BREADCRUMB_NAVIGATION);
 				if (options[OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS])          setCache(TRUE, OPTION.HIDE_DIALOG_HEADER_ACTION_ITEMS);
 				if (options[OPTION.HIDE_DIALOG_HEADER_HISTORY])               setCache(TRUE, OPTION.HIDE_DIALOG_HEADER_HISTORY);
+				if (options[OPTION.HIDE_DIALOG_HEADER_ADD_TO])                setCache(TRUE, OPTION.HIDE_DIALOG_HEADER_ADD_TO);
 				if (options[OPTION.HIDE_DIALOG_HEADER_SETTINGS])              setCache(TRUE, OPTION.HIDE_DIALOG_HEADER_SETTINGS);
 				if (options[OPTION.HIDE_DIALOG_HEADER_OVERFLOW])              setCache(TRUE, OPTION.HIDE_DIALOG_HEADER_OVERFLOW);
 			}
@@ -850,6 +874,8 @@ class KioskMode implements KioskModeRunner {
 
 		} else if (JS_TEMPLATE_REG.test(value)) {
 
+			const template = value.replace(JS_TEMPLATE_REG, '$1');
+
 			const renderingFunction = (result: unknown): void => {
 				// Set the compiled option
 				options[option] = typeof result === 'boolean'
@@ -858,8 +884,16 @@ class KioskMode implements KioskModeRunner {
 				executeRendering(value, result);
 			};
 
+			if (!this._renderer.subscribed) {
+				const { entities } = this._renderer.parseTemplate(template);
+				const hasHaEntities = entities.some((entity: string) => DOMAIN_ENTITY_REGEXP.test(entity));
+				if (hasHaEntities) {
+					this._renderer.init();
+				}
+			}
+
 			this._renderer.trackTemplate(
-				value.replace(JS_TEMPLATE_REG, '$1'),
+				template,
 				renderingFunction
 			);
 
