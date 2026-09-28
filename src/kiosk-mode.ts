@@ -26,7 +26,6 @@ import {
 	OPTION,
 	CONDITIONAL_OPTION,
 	DEBUG_CONFIG_OPTION,
-	DOMAIN_ENTITY_REGEXP,
 	SPECIAL_QUERY_PARAMS,
 	ELEMENT,
 	TRUE,
@@ -686,6 +685,7 @@ class KioskMode implements KioskModeRunner {
 						STYLES.DIALOG_UPDATE_ACTIONS
 					],
 					[
+						options[OPTION.HIDE_DIALOG_CAMERA_ACTIONS] &&
 						dialogChild.host.localName === ELEMENT.HA_DIALOG_CAMERA,
 						STYLES.DIALOG_CAMERA_ACTIONS
 					],
@@ -886,8 +886,7 @@ class KioskMode implements KioskModeRunner {
 
 			if (!this._renderer.subscribed) {
 				const { entities } = this._renderer.parseTemplate(template);
-				const hasHaEntities = entities.some((entity: string) => DOMAIN_ENTITY_REGEXP.test(entity));
-				if (hasHaEntities) {
+				if (entities.length) {
 					this._renderer.init();
 				}
 			}
