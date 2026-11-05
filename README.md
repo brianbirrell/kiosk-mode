@@ -19,12 +19,20 @@ Hides the header and/or sidebar drawer in [Home Assistant](https://www.home-assi
 
 >If you want to learn how to install and set some basic configurations in `kiosk-mode` through a video, check the [next one](https://youtu.be/G3lT4zgjER8) from [@smarthomejunkie](https://github.com/smarthomejunkie).
 
-> [!IMPORTANT]  
-> 1. If you have `Home Assistant` `2025.5.1` or greater installed, the minimum compatible version that you can install is `Kiosk Mode` `v7.0.0`. If you are in a lower version of `Home Assistant`, the latest compatible version that you can install is `v6.7.0`.
-> 2. If you have `Home Assistant` `2025.10.0` or greater installed, the minimum compatible version that you can install is `Kiosk Mode` `v8.0.0`. If you are in a version of `Home Assistant` between `2025.5.1` and `2025.10.0`, the latest compatible version that you can install is `v7.4.0`.
->3. If you have `Home Assistant` `2026.2.0` or greater installed, the minimum compatible version that you can install is `Kiosk Mode` `v10.0.0`. If you are in a version of `Home Assistant` between `2025.10.0` and `2025.1.3`, the latest compatible version that you can install is `v9.0.2`.
->4. If you have `Home Assistant` `2026.3.0` or greater installed, the minimum compatible version that you can install is `Kiosk Mode` `v11.0.0`. If you are in a version of `Home Assistant` between `2025.2.0` and `2025.2.3`, the latest compatible version that you can install is `v10.0.0`.
->5. If you have `Home Assistant` `2026.6.0` or greater installed, the minimum compatible version that you can install is `Kiosk Mode` `v14.0.0`. If you are in a version of `Home Assistant` between `2025.3.0` and `2025.6.0`, the latest compatible version that you can install is `v13.1.0`.
+> [!IMPORTANT]
+>If you have `Home Assistant` `2026.10.1` or greater installed, the minimum compatible version that you can install is `Kiosk Mode` `v15.0.0`.
+>
+><details>
+><summary><b>Previous Home Assistant versions</b></summary>
+><br>
+>
+>* If you are in a `Home Assistant` version between `2026.6.0` and `2026.10.0`, the latest compatible version that you can install is `v14.2.1`.
+>* If you are in a `Home Assistant` version between `2026.4.0` and `2026.5.4`, the latest compatible version that you can install is `v13.1.0`.
+>* If you are in a `Home Assistant` version between `2026.3.0` and `2026.3.4`, the latest compatible version that you can install is `v11.0.0`.
+>* If you are in a `Home Assistant` version between `2026.2.0` and `2026.2.3`, the latest compatible version that you can install is `v10.0.1`.
+>* If you are in a `Home Assistant` version between `2025.10.0` and `2026.1.3`, the latest compatible version that you can install is `v9.0.2`.
+>
+></details>
 
 <details>
   <summary><b>Installation through HACS</b></summary>
@@ -148,7 +156,7 @@ All the options, excluding `debug_template`, can be set as a boolean and all of 
 |`hide_dialog_camera_actions`                          | Hides the actions block in the more-info dialogs of camera entities. |
 |`hide_dialog_timer_actions`                           | Hides the actions block in the more-info dialogs of timer entities. |
 |`hide_dialog_climate_actions`                         | Hides all the actions in the more-info dialogs of climate entities. |
-|`hide_dialog_climate_temperature_actions`             | Hides the temperature cotrol actions in the more-info dialogs of climate entities. |
+|`hide_dialog_climate_temperature_actions`             | Hides the temperature control actions in the more-info dialogs of climate entities. |
 |`hide_dialog_climate_settings_actions`                | Hides the mode and preset actions in the more-info dialogs of climate entities. |
 |`hide_dialog_light_actions`                           | Hides all the actions in the more-info dialogs of light entities. |
 |`hide_dialog_light_control_actions`                   | Hides the control actions in the more-info dialogs of light entities. |
@@ -311,8 +319,8 @@ kiosk_mode:
 This templating system is [the same that Home Assistant implements](https://www.home-assistant.io/docs/configuration/templating). You can use the majority of the template methods and objects. The entire template will be processed, rendered and the result will be used in the desired option. `Jinja templates` don't have access to client side variables or DOM APIs, but the next client side variables will be available:
 
 * `user_name`: String with the logged user's name
-* `user_is_admin`: Bolean value than indicates if the logged user is admin or not
-* `user_is_owner`: Bolean value than indicates if the logged user is the owner or not
+* `user_is_admin`: Boolean value than indicates if the logged user is admin or not
+* `user_is_owner`: Boolean value than indicates if the logged user is the owner or not
 * `user_agent`: User agent of the browser in which Home Assistant is being executed
 
 #### Jinja templates example
@@ -353,7 +361,7 @@ Both options are valid. At the end, using one or the other is up to you.
 <br>
 
 ## Conditional Lovelace Config
-Contitional configs take priority and if a condition matches all other config options/methods are ignored.
+Conditional configs take priority and if a condition matches all other config options/methods are ignored.
 These use the same options as above, but placed under one of the following user/entity conditions:<br><br>
 
 ### admin_settings:
@@ -454,7 +462,7 @@ The query string options are:
 * `?hide_dialog_camera_actions` to hide the actions block in the more-info dialogs of camera entities
 * `?hide_dialog_timer_actions` to hide the actions block in the more-info dialogs of timer entities
 * `?hide_dialog_climate_actions` to hide all the actions in the more-info dialogs of climate entities
-* `?hide_dialog_climate_temperature_actions` to hide the temperature cotrol actions in the more-info dialogs of climate entities
+* `?hide_dialog_climate_temperature_actions` to hide the temperature control actions in the more-info dialogs of climate entities
 * `?hide_dialog_climate_settings_actions` to hide the mode and preset actions in the more-info dialogs of climate entities
 * `?hide_dialog_light_actions` to hide all the actions in the more-info dialogs of light entities
 * `?hide_dialog_light_control_actions` to hide the control actions in the more-info dialogs of light entities
@@ -484,7 +492,7 @@ This works for all query strings except for the utility strings listed below.
 
 | Option | Description |
 | ------ | ----------- |
-| `debug` | Prints useful information in the console. The raw config loaded from the Lovelace panel, the resulting final config with all the options, and if a template is rendered, it will print the option that trigered the template, the template code and the evaluated result of it. |
+| `debug` | Prints useful information in the console. The raw config loaded from the Lovelace panel, the resulting final config with all the options, and if a template is rendered, it will print the option that triggered the template, the template code and the evaluated result of it. |
 | `debug_template` | Useful to debug the result of a single template without activating the `debug` mode. |
 
 <br>
@@ -514,7 +522,7 @@ Some features are outside `kiosk-mode` scope and they would be hard to maintain 
 ### Credit
 This was originally based on and inspired by [ciotlosm's kiosk mode gist](https://gist.github.com/ciotlosm/1f09b330aa5bd5ea87b59f33609cc931) and [corrafig's fork](https://gist.github.com/corrafig/c8288df960e7f59e82c12d14de26fde8) of the same gist.
 
-Big thank you to [matt8707](https://github.com/matt8707) for starting this project, allowing me to rewrite it, and transfering ownership.
+Big thank you to [matt8707](https://github.com/matt8707) for starting this project, allowing me to rewrite it, and transferring ownership.
 
 Many thanks to [KTibow](https://github.com/KTibow) as well, for the github release action and support.
 
